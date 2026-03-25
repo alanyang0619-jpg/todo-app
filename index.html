@@ -757,10 +757,185 @@
       clip: rect(0, 0, 0, 0);
       border: 0;
     }
+
+    /* Auth gate */
+    .auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      background: var(--color-bg);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      padding: var(--space-xl);
+      border-radius: var(--radius-lg);
+      background: var(--color-card);
+      box-shadow: var(--shadow-float);
+      border: 1px solid var(--color-border);
+    }
+
+    .auth-title {
+      font: var(--font-h1);
+      margin: 0 0 var(--space-sm);
+      text-align: center;
+    }
+
+    .auth-hint {
+      margin: 0 0 var(--space-lg);
+      font: var(--font-small);
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    .auth-field {
+      margin-bottom: var(--space-md);
+    }
+
+    .auth-label {
+      display: block;
+      font: var(--font-small);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-xs);
+    }
+
+    .auth-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-bg);
+      padding-right: var(--space-xs);
+    }
+
+    .auth-input-wrap:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(92, 122, 234, 0.2);
+    }
+
+    .auth-input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: var(--space-sm) var(--space-md);
+      font: var(--font-body);
+    }
+
+    .auth-input-wrap .icon-btn {
+      flex-shrink: 0;
+    }
+
+    .auth-error {
+      margin: var(--space-md) 0 0;
+      font: var(--font-small);
+      color: var(--color-accent);
+      font-weight: 600;
+      text-align: center;
+      min-height: 1.4em;
+    }
+
+    .auth-error:empty {
+      min-height: 0;
+      margin-top: 0;
+    }
+
+    .auth-actions {
+      margin-top: var(--space-lg);
+    }
+
+    .auth-actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .auth-lang {
+      display: flex;
+      justify-content: center;
+      margin-top: var(--space-md);
+    }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div id="authGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-card">
+      <div id="authSetupBlock">
+        <h2 class="auth-title" id="authTitle" data-i18n="auth_setup_title">设置访问口令</h2>
+        <p class="auth-hint" data-i18n="auth_hint">请设置访问口令，之后每次打开需要输入此口令</p>
+        <div class="auth-field">
+          <label class="auth-label" for="setupPw1" data-i18n="auth_password">访问口令</label>
+          <div class="auth-input-wrap">
+            <input type="password" class="auth-input" id="setupPw1" autocomplete="new-password" />
+            <button type="button" class="icon-btn" id="toggleSetup1" aria-label="Show password" title="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label class="auth-label" for="setupPw2" data-i18n="auth_confirm_password">再次输入确认</label>
+          <div class="auth-input-wrap">
+            <input type="password" class="auth-input" id="setupPw2" autocomplete="new-password" />
+            <button type="button" class="icon-btn" id="toggleSetup2" aria-label="Show password" title="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+            </button>
+          </div>
+        </div>
+        <p id="authSetupError" class="auth-error" role="alert"></p>
+        <div class="auth-actions">
+          <button type="button" class="btn btn--primary" id="btnAuthSetup" data-i18n="auth_confirm_set">确认设置</button>
+        </div>
+      </div>
+      <div id="authLoginBlock" hidden>
+        <h2 class="auth-title" id="authLoginTitle" data-i18n="auth_login_title">请输入访问口令</h2>
+        <div class="auth-field">
+          <label class="auth-label sr-only" for="loginPw" data-i18n="auth_password">访问口令</label>
+          <div class="auth-input-wrap">
+            <input type="password" class="auth-input" id="loginPw" autocomplete="current-password" />
+            <button type="button" class="icon-btn" id="toggleLoginPw" aria-label="Show password" title="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+            </button>
+          </div>
+        </div>
+        <p id="authLoginError" class="auth-error" role="alert"></p>
+        <div class="auth-actions">
+          <button type="button" class="btn btn--primary" id="btnAuthLogin" data-i18n="auth_enter">进入</button>
+        </div>
+      </div>
+      <div class="auth-lang">
+        <button type="button" class="icon-btn lang-btn" id="btnAuthLang" aria-label="Toggle language">中</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    try {
+      var p = localStorage.getItem('todo-app-password');
+      var setup = document.getElementById('authSetupBlock');
+      var login = document.getElementById('authLoginBlock');
+      var gate = document.getElementById('authGate');
+      if (p && String(p).length) {
+        if (setup) setup.hidden = true;
+        if (login) login.hidden = false;
+        if (gate) gate.setAttribute('aria-labelledby', 'authLoginTitle');
+      } else if (gate) {
+        gate.setAttribute('aria-labelledby', 'authTitle');
+      }
+    } catch (e) {}
+  })();
+  </script>
+
+  <div class="app" id="mainApp" hidden>
     <aside class="sidebar" aria-label="Navigation">
       <button type="button" class="sidebar__new" id="btnSidebarNew">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -872,6 +1047,8 @@
   var STORAGE_TASKS = 'todo-app-tasks-v1';
   var STORAGE_THEME = 'todo-app-theme';
   var STORAGE_LANG = 'todo-app-lang';
+  var STORAGE_PASSWORD = 'todo-app-password';
+  var MIN_PASSWORD_LEN = 4;
 
   var i18n = {
     'zh-CN': {
@@ -891,7 +1068,17 @@
       add: '添加',
       due_date: '截止日期',
       delete: '删除',
-      mark_important: '标记重要'
+      mark_important: '标记重要',
+      auth_setup_title: '设置访问口令',
+      auth_login_title: '请输入访问口令',
+      auth_password: '访问口令',
+      auth_confirm_password: '再次输入确认',
+      auth_confirm_set: '确认设置',
+      auth_enter: '进入',
+      auth_hint: '请设置访问口令，之后每次打开需要输入此口令',
+      auth_error_wrong: '口令错误，请重试',
+      auth_error_short: '口令至少需要 4 个字符',
+      auth_error_mismatch: '两次输入不一致'
     },
     'en-US': {
       app_title: 'Todo',
@@ -910,13 +1097,24 @@
       add: 'Add',
       due_date: 'Due Date',
       delete: 'Delete',
-      mark_important: 'Mark as important'
+      mark_important: 'Mark as important',
+      auth_setup_title: 'Set access password',
+      auth_login_title: 'Enter access password',
+      auth_password: 'Password',
+      auth_confirm_password: 'Confirm password',
+      auth_confirm_set: 'Confirm',
+      auth_enter: 'Enter',
+      auth_hint: 'Set a password. You will need to enter it every time you open the app.',
+      auth_error_wrong: 'Wrong password, please try again',
+      auth_error_short: 'Password must be at least 4 characters',
+      auth_error_mismatch: 'Passwords do not match'
     }
   };
 
   var currentLang = 'zh-CN';
   var currentView = 'all';
   var tasks = [];
+  var todoAppInitialized = false;
 
   function getLang() {
     try {
@@ -960,10 +1158,14 @@
   }
 
   function updateLangButton() {
-    var btn = document.getElementById('btnLang');
-    if (!btn) return;
-    btn.textContent = currentLang === 'zh-CN' ? 'EN' : '中';
-    btn.setAttribute('aria-label', currentLang === 'zh-CN' ? 'Switch to English' : '切换到中文');
+    var text = currentLang === 'zh-CN' ? 'EN' : '中';
+    var label = currentLang === 'zh-CN' ? 'Switch to English' : '切换到中文';
+    ['btnLang', 'btnAuthLang'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (!btn) return;
+      btn.textContent = text;
+      btn.setAttribute('aria-label', label);
+    });
   }
 
   function getTheme() {
@@ -1066,6 +1268,35 @@
     var d = document.createElement('div');
     d.textContent = s;
     return d.innerHTML;
+  }
+
+  function getStoredPassword() {
+    try {
+      var s = localStorage.getItem(STORAGE_PASSWORD);
+      return s && String(s).length ? String(s) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setStoredPassword(value) {
+    try {
+      localStorage.setItem(STORAGE_PASSWORD, value);
+    } catch (e) {}
+  }
+
+  function wirePasswordToggle(btn, input) {
+    if (!btn || !input) return;
+    btn.addEventListener('click', function () {
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      var open = btn.querySelector('.eye-open');
+      var closed = btn.querySelector('.eye-closed');
+      if (open && closed) {
+        open.style.display = show ? 'none' : 'block';
+        closed.style.display = show ? 'block' : 'none';
+      }
+    });
   }
 
   function renderTaskItem(task, index, view) {
@@ -1331,7 +1562,151 @@
     render();
   }
 
-  function init() {
+  function unlockApp() {
+    var gate = document.getElementById('authGate');
+    var app = document.getElementById('mainApp');
+    if (gate) gate.hidden = true;
+    if (app) app.hidden = false;
+    if (todoAppInitialized) return;
+    todoAppInitialized = true;
+    initTodoApp();
+  }
+
+  function initAuth() {
+    applyLanguage(getLang());
+    setTheme(getTheme());
+
+    var gate = document.getElementById('authGate');
+    var setupBlock = document.getElementById('authSetupBlock');
+    var loginBlock = document.getElementById('authLoginBlock');
+    var stored = getStoredPassword();
+
+    if (gate) {
+      gate.hidden = false;
+      gate.setAttribute('aria-labelledby', stored ? 'authLoginTitle' : 'authTitle');
+    }
+
+    if (setupBlock) setupBlock.hidden = !!stored;
+    if (loginBlock) loginBlock.hidden = !stored;
+
+    wirePasswordToggle(document.getElementById('toggleSetup1'), document.getElementById('setupPw1'));
+    wirePasswordToggle(document.getElementById('toggleSetup2'), document.getElementById('setupPw2'));
+    wirePasswordToggle(document.getElementById('toggleLoginPw'), document.getElementById('loginPw'));
+
+    function clearAuthErrors() {
+      var es = document.getElementById('authSetupError');
+      var el = document.getElementById('authLoginError');
+      if (es) es.textContent = '';
+      if (el) el.textContent = '';
+    }
+
+    function showSetupError(key) {
+      var es = document.getElementById('authSetupError');
+      if (es) es.textContent = t(key);
+    }
+
+    function showLoginError(key) {
+      var el = document.getElementById('authLoginError');
+      if (el) el.textContent = t(key);
+    }
+
+    function tryLogin() {
+      clearAuthErrors();
+      var inp = document.getElementById('loginPw');
+      var pw = (inp && inp.value ? inp.value : '').trim();
+      if (pw.length < MIN_PASSWORD_LEN) {
+        showLoginError('auth_error_short');
+        return;
+      }
+      if (pw !== getStoredPassword()) {
+        showLoginError('auth_error_wrong');
+        if (inp) inp.select();
+        return;
+      }
+      if (inp) inp.value = '';
+      unlockApp();
+    }
+
+    var btnAuthLang = document.getElementById('btnAuthLang');
+    if (btnAuthLang) {
+      btnAuthLang.addEventListener('click', function () {
+        applyLanguage(currentLang === 'zh-CN' ? 'en-US' : 'zh-CN');
+      });
+    }
+
+    var btnAuthSetup = document.getElementById('btnAuthSetup');
+    if (btnAuthSetup) {
+      btnAuthSetup.addEventListener('click', function () {
+        clearAuthErrors();
+        var a = document.getElementById('setupPw1');
+        var b = document.getElementById('setupPw2');
+        var p1 = (a && a.value ? a.value : '').trim();
+        var p2 = (b && b.value ? b.value : '').trim();
+        if (p1.length < MIN_PASSWORD_LEN || p2.length < MIN_PASSWORD_LEN) {
+          showSetupError('auth_error_short');
+          return;
+        }
+        if (p1 !== p2) {
+          showSetupError('auth_error_mismatch');
+          return;
+        }
+        setStoredPassword(p1);
+        unlockApp();
+      });
+    }
+
+    var btnAuthLogin = document.getElementById('btnAuthLogin');
+    if (btnAuthLogin) {
+      btnAuthLogin.addEventListener('click', tryLogin);
+    }
+
+    var loginPw = document.getElementById('loginPw');
+    if (loginPw) {
+      loginPw.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          tryLogin();
+        }
+      });
+      loginPw.addEventListener('input', function () {
+        var el = document.getElementById('authLoginError');
+        if (el) el.textContent = '';
+      });
+    }
+
+    var setupPw1 = document.getElementById('setupPw1');
+    var setupPw2 = document.getElementById('setupPw2');
+    if (setupPw1) {
+      setupPw1.addEventListener('input', function () {
+        var es = document.getElementById('authSetupError');
+        if (es) es.textContent = '';
+      });
+    }
+    if (setupPw2) {
+      setupPw2.addEventListener('input', function () {
+        var es = document.getElementById('authSetupError');
+        if (es) es.textContent = '';
+      });
+      setupPw2.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (btnAuthSetup) btnAuthSetup.click();
+        }
+      });
+    }
+
+    if (setupPw1 && !stored) {
+      setTimeout(function () {
+        setupPw1.focus();
+      }, 0);
+    } else if (loginPw && stored) {
+      setTimeout(function () {
+        loginPw.focus();
+      }, 0);
+    }
+  }
+
+  function initTodoApp() {
     loadTasks();
     applyLanguage(getLang());
     setTheme(getTheme());
@@ -1382,9 +1757,9 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initAuth);
   } else {
-    init();
+    initAuth();
   }
 })();
   </script>
